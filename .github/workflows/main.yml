@@ -1,13 +1,27 @@
-name: Build JARVIS APK
+
+        
+
+
+
+
+
+
+
+
+
+          name: Build JARVIS APK
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [main]
+
+permissions:
+  contents: read
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Get source code
@@ -24,13 +38,14 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Set up Android
+      - name: Set up Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: |
+            platforms;android-35
+            build-tools;35.0.0
 
-      - name: Install Android SDK
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
-      - name: Build APK
+      - name: Build JARVIS APK
         run: gradle --no-daemon assembleDebug
 
       - name: Upload APK
@@ -38,3 +53,4 @@ jobs:
         with:
           name: JARVIS-debug-apk
           path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
