@@ -1,3 +1,4 @@
+
 name: Build JARVIS APK
 
 on:
@@ -10,10 +11,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
-      - name: Get source code
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Set up Java
@@ -30,16 +31,19 @@ jobs:
       - name: Set up Android SDK
         uses: android-actions/setup-android@v3
         with:
+          cmdline-tools-version: '11076708'
           packages: |
             platforms;android-35
             build-tools;35.0.0
 
-      - name: Build JARVIS APK
+      - name: Build APK
         run: gradle --no-daemon assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: JARVIS-debug-apk
+          path: app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
